@@ -17,20 +17,20 @@ class Rsa_signature:
 		return self.__read_file('signature.txt')
 
 	def generate_rsa_key(self):
+		print("Generating RSA Keys...")
 		(public_key, private_key) =  rsa.newkeys(2048)
-		print("Criando chaves rsa...")
 		try:
 			with open("public_key.txt", "wb") as outfile:
 				outfile.write(public_key.save_pkcs1('PEM'))
 		except IOError:
-			print('Erro! Tente Novamente')
+			print('Error! Try again')
 
 		try:
 			with open("private_key.txt", "wb") as outfile2:
 				outfile2.write(private_key.save_pkcs1('PEM'))
-			print("Chaves Rsa Criadas!!")
+			print("Created Rsa Keys!")
 		except IOError:
-			print('Erro! Tente Novamente')
+			print('Error! Try again')
 
 	def sign(self, file):
 		private_key_load = rsa.PrivateKey.load_pkcs1(self.__read_file('private_key.txt'))
@@ -44,10 +44,11 @@ class Rsa_signature:
 		try:
 			with open("signature.txt", "wb") as outfile2:
 				outfile2.write(signature)
+			print("File has been signed!")
 		except IOError:
-			print('Erro! Tente Novamente')
+			print('Error! Try again')
 
-	def verify_signature(self, file):
+	def verify_rsa_signature(self, file):
 		public_key_load = rsa.PublicKey.load_pkcs1(self.__read_file('public_key.txt'))
 
 		file = self.__read_file(file)
@@ -56,6 +57,6 @@ class Rsa_signature:
 
 		try:
 			rsa.verify(file, signature, public_key_load)
-			print('\n Assinatura válida! Documento não foi modificado.\n')
+			print('\n Valid signature! Document has not been modified.\n')
 		except:
-			print('\n Documento foi modificado ou não possui assinatura digital.\n')
+			print('\n Document has been modified or does not have a signature.\n')
