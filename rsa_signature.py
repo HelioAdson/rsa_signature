@@ -45,16 +45,43 @@ class Rsa_signature:
 
 		try:
 			with open("public_key.txt", "wb") as outfile:
-				outfile.write(pub_pem.save_pkcs1('PEM'))
+				outfile.write(public_key.save_pkcs1('PEM'))
 		except IOError:
 			print('Error! Try again')
 
 		try:
 			with open("private_key.txt", "wb") as outfile2:
-				outfile2.write(prv_pem.save_pkcs1('PEM'))
+				outfile2.write(private_key.save_pkcs1('PEM'))
 			print("Created Rsa Keys!")
 		except IOError:
 			print('Error! Try again')
+
+
+	def encrypt(self, file):
+		file = self.__read_file(file)
+		message = file
+		public_key = rsa.PublicKey.load_pkcs1(self.__read_file('public_key.txt'))
+
+		crypto = rsa.encrypt(message, public_key)
+		try:
+			with open("encrypted.txt", "wb") as outfile3:
+				outfile3.write(crypto)
+			print("Encrypted message!")
+		except IOError:
+			print('Error! Try again')
+
+	def decrypt(self):
+		file = self.__read_file("encrypted.txt")
+		private_key = rsa.PrivateKey.load_pkcs1(self.__read_file('private_key.txt'))
+
+		message = rsa.decrypt(file, private_key)
+		try:
+			with open("decrypt.txt", "wb") as outfile3:
+				outfile3.write(message)
+			print("Decrypted message!")
+		except IOError:
+			print('Error! Try again')
+
 
 	def sign(self, file):
 		private_key_load = rsa.PrivateKey.load_pkcs1(self.__read_file('private_key.txt'))
